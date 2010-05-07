@@ -1,21 +1,7 @@
 #The prime factors of 13195 are 5, 7, 13 and 29.
 #What is the largest prime factor of the number 600851475143 ?
 
-#Algorithm #1
-# Find factors of number, check if each factor is prime
-
-#Algorithm #2
-# Generate prime numbers upto less than square of number, see if the number can be divided with them
-# Code generator that yields prime numbers upto certain amount
-
-# Sieve of Erasthosthenes
-# Create a list of consecutive integers from two to n: (2, 3, 4, ..., n),
-# Initially, let p equal 2, the first prime number,
-# While enumerating all multiples of p starting from p2, strike them off from the original list,
-# Find the first number remaining on the list after p (it's the next prime); let p equal this number,
-# Repeat steps 3 and 4 until p2 is greater than n.
-# All the remaining numbers in the list are prime.
-
+# Sieve of erasthosthenes to generate a list of primes upto 200
 def get_primes_eras (number)
 
   num_list = (2..number).to_a  
@@ -29,8 +15,6 @@ def get_primes_eras (number)
   return prime_list
 end
 
-# function to check if number is prime referring http://en.wikipedia.org/wiki/Primality_test
-# Algo
 # 1. Use precomputed prime list upto 200 to eliminate
 # 2. If number is not divisible by precomputed list
 # 3. Generate numbers of form 6k + 1, 6k - 1 upto sqrt(n) to divide number
@@ -48,10 +32,9 @@ def num_prime?(number)
     end    
     i = i + 1
   end
-
   limit = Math.sqrt(number).to_i
 
-#already divided upto the last prime before 200(199), take off from there
+  #already divided upto the last prime before 200(199), take off from there
   k=34
   while k < limit
     if number%(6*k+1)==0 || number%(6*k-1)==0
@@ -60,7 +43,7 @@ def num_prime?(number)
     k = k + 1
   end
 
-#not divisible number is prime
+  #if not divisible number is prime
   return true
       
 end
