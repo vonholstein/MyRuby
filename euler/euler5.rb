@@ -10,11 +10,27 @@
 
 base_array = (1..20).to_a
 work_array = (1..20).to_a
-min_pos = -1
+result_array = []
 
-while work_array[0].to_s*20 != work_array.join
-  min_pos = work_array.index(work_array.min)
-  work_array[min_pos] = work_array[min_pos] + base_array[min_pos]
+1.upto(19) do |k|
+  flag = true
+  until flag == false do
+    flag = false
+    i = work_array.min
+    work_array.collect! do |j|
+      if j%i == 0
+        flag = true
+        j/i
+      else
+        j
+      end
+    end
+    puts "k=#{k} #{work_array.inspect}"
+    result_array << i if flag == true
+  end
 end
 
-puts work_array[0]
+          
+      
+      
+      
