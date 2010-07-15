@@ -1,25 +1,25 @@
 class Student
-  attr_accessor :name, :age, :sex, :subjects, :grade
+  attr_accessor :name, :dob, :sex, :subjects, :grade
 
   def initialize(grade=nil)
     @age = 0
   end  
 end
 
+class DateOfBirth
+  attr_accessor :dob
+  
+  def initialize(day,month,year)
+    
+  end
+end
+
+
 class Subject
   attr_accessor :teachers, :grades
 
   def initialize(teachers=[],grades=[])
     @teachers, @grades = teachers, grades
-  end
-
-end
-
-class School
-  attr_accessor :students, :teachers, :grades
-
-  def initialize(students=[],teachers=[],grades=[])
-    @students, @teachers, @grades = students, teachers, grades
   end
 
 end
@@ -35,5 +35,7 @@ class Grade
     "Grade" + " " + @level.to_s
   end  
 end
+
+
 
   

@@ -1,5 +1,5 @@
 # Tests for student class
-$: << '/home/hnahas/my-ruby/schoolme'
+$:.unshift File.join(File.expand_path(File.dirname(__FILE__)), "..") #include parent directory
 
 require 'student'
 
