@@ -21,5 +21,13 @@ describe "Crypto" do
   end  
 end
 
+describe "Deck" do
+  it "should have 52 cards"
+  it "should have 52 cards in order Clubs,Diamonds,Hearts,Spades,Joker under default configuration" do
+    deck = Deck.new
+    dec.cards
+  end  
+  it "should randomize 52 cards"
+end
 
 
