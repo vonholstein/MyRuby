@@ -2,22 +2,11 @@
 $:.unshift File.join(File.expand_path(File.dirname(__FILE__)), "..") #include parent directory
 
 require 'student'
-
-describe "age of student" do
-  before(:each) do
-    @student = Student.new
-  end  
-
-  it "should not be less than 0" do
-    @student.should have_at_least(0).age
-  end
-
-end
+require 'grade'
+require 'school'
+require 'utility'
 
 describe "student" do
-  before(:each) do
-    @student = Student.new
-  end  
 
   it "should be able to join a grade" do    
     grade_1 = Grade.new(1)
@@ -25,8 +14,16 @@ describe "student" do
     @student.grade.should eql(grade_1)
   end  
 
-  it "should not be able to join a grade without a school"
-
-  it "should not be able to join a school without a grade"
+  it "should be able to initialize with minimum required variables, school, name, dob, sex" do
+    school_name = "My School"
+    student_name = "Habib Nahas"
+    student_dob = "16/07/1984"
+    student_sex = "M"
+    school_1 = School.new(school_name)
+    student_1 = Student.new(school_1, name: student_name, dob: student_dob, sex: student_sex)
+    student_1.name.should eql(student_name)
+    student_1].dob.should eql(student_dob)
+    student_1.sex.should eql(student_sex)
+  end  
   
 end

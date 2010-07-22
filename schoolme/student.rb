@@ -1,41 +1,19 @@
 class Student
-  attr_accessor :name, :dob, :sex, :subjects, :grade
+  attr_accessor :id, :name, :sex, :subjects, :grade, :school
 
-  def initialize(grade=nil)
-    @age = 0
-  end  
-end
+  # school is compulsory, student details are in a hash  
+  def initialize(school,student_details)
+    @school = school
+    @id = school.nextId
+    @name = student_details[:name]
+    @dob = DateOfBirth.parseDate(student_details[:dob])
+    @sex = student_details[:sex]
+    # @subjects = student_details[:subjects].map { |s| Subject.new(s) }
+    # @grade = Grade.new(student_details[:grade])
+  end
 
-class DateOfBirth
-  attr_accessor :dob
+  def dob
+    @dob.to_s
+  end
   
-  def initialize(day,month,year)
-    
-  end
 end
-
-
-class Subject
-  attr_accessor :teachers, :grades
-
-  def initialize(teachers=[],grades=[])
-    @teachers, @grades = teachers, grades
-  end
-
-end
-
-class Grade
-  attr_accessor :level, :students, :criteria
-
-  def initialize(level,students=[])
-    @level, @students = level, students
-  end
-
-  def to_s
-    "Grade" + " " + @level.to_s
-  end  
-end
-
-
-
-  
