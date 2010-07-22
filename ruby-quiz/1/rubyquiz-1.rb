@@ -26,17 +26,18 @@ module RubyQuiz1
 
   class Deck
 
-    CARD_FACES = ['C','D','H','S']
-    CARD_NUMBERS = (1..13).to_a
-    JOKER = 'J'
+    attr_reader :card_faces, :card_numbers, :joker
+
+    @@card_faces = ['C','D','H','S']
+    @@card_numbers = (1..13).to_a
+    @@joker = 'J'
 
     attr_reader :cards
     
     def initialize()
-      # @cards = Card.new(54)
-      @cards = CARD_FACES.product(CARD_NUMBERS).collect { |x| Card.new(self, number: x[1], face: x[0]) }
-      @cards.push Card.new face:JOKER  # add two jokers
-      @cards.push Card.new face:JOKER
+      @cards = card_faces.product(card_numbers).collect { |x| Card.new(self, number: x[1], face: x[0]) }
+      @cards.push Card.new face:joker  # add two jokers
+      @cards.push Card.new face:joker
     end
     
   end
@@ -45,29 +46,34 @@ module RubyQuiz1
     include Comparable
     
     attr_reader :number, :face
-    
+
+
+    # If card face is joker initialize joker and return
+    # else initialize card with number and face
     def initialize(deck, card)
 
-      if card[:face] == RubyQuiz1::Deck::JOKER
-        @face = RubyQuiz1::Deck::JOKER
+      @deck = deck
+
+      if card[:face] == deck.joker
+        @face = deck.joker
         return
       end      
         
       if card.has_key?(:number)        
-        raise InvalidCardException unless RubyQuiz1::Deck::CARD_NUMBERS.include? card[:number]
+        raise InvalidCardException unless deck.card_numbers.include? card[:number]
         @number = card[:number]
       end
 
       if card.has_key?(:face)
-        raise InvalidCardException unless RubyQuiz1::Deck::CARD_FACES.include? card[:face]
+        raise InvalidCardException unless deck.card_faces.include? card[:face]
         @face = card[:face]
       end
 
-      @deck = deck
+
     end
 
     def joker?
-      @face == RubyQuiz1::Deck::JOKER
+      @face == deck.joker
     end
 
     # Equality logic for cards
@@ -77,9 +83,9 @@ module RubyQuiz1
     def <=>(other_card)
       if (self.joker? && other_card.joker?) || [self.number,self.face] == [other_card.number,other_card.face]
         return 0
-      elsif RubyQuiz1::Deck::CARD_FACES.index(self.face) < RubyQuiz1::Deck::CARD_FACES.index(other_card.face)
+      elsif deck.card_faces.index(self.face) < deck.card_faces.index(other_card.face)
         return -1
-      elsif RubyQuiz1::Deck::CARD_FACES.index(self.face) > RubyQuiz1::Deck::CARD_FACES.index(other_card.face)
+      elsif deck.card_faces.index(self.face) > deck.card_faces.index(other_card.face)
         return 1
       else
         (self.number < other_card.number)? -1 : 1
@@ -94,7 +100,6 @@ module RubyQuiz1
       end      
     end
     
-    
-  end  
+  end
   
 end
