@@ -25,9 +25,21 @@ describe "RubyQuiz1::Crypto" do
     encrypted_msg.should === ["GLNCQ","MJAFF","FVOMB","JIYCB"].join
   end
   it "should decrypt a message correctly" do
-    pending
+    message = "Code in Ruby, live longer!"
+    encrypted_msg = ["GLNCQ","MJAFF","FVOMB","JIYCB"].join
+    solitaire_key = "DWJXH YRFDG TMSHP UURXJ"
+    decrypted_msg = RubyQuiz1::Crypto.decrypt(encrypted_msg,solitaire_key)
+    decrypted_msg.should === RubyQuiz1::Crypto.group_message(message).join
+  end
+  it "should fail to decrypt without correct key" do
+    message = "Code in Ruby, live longer!"
+    encrypted_msg = ["HLNCQ","KJAFF","FVOMB","JIYCB"].join
+    solitaire_key = "DWJXH YRFDG TMSHP UURXJ"
+    decrypted_msg = RubyQuiz1::Crypto.decrypt(encrypted_msg,solitaire_key)
+    decrypted_msg.should_not === RubyQuiz1::Crypto.group_message(message).join
   end  
 end
+
 
 
 describe "RubyQuiz1::Deck" do
@@ -47,8 +59,31 @@ describe "RubyQuiz1::Deck" do
   it "should randomize 52 cards" do
     # test 5 cards at random, it should not be in its default positions"
     pending
-  end  
+  end
 end
+
+describe "RubyQuiz1::Card" do
+  it "should return correct value for a card" do
+    deck = RubyQuiz1::Deck.new false
+    card = RubyQuiz1::Card.new deck, number: 13, face: 'C'
+    card.value.should === 13    
+  end
+end
+describe "RubyQuiz1::Solitaire" do
+  it "should generate correct keystream for a given deck configuration" do
+    deck_to_key = RubyQuiz1::Deck.new
+    solitaire = RubyQuiz1::Solitaire.new
+    solitaire_key = "DWJXH YRFDG TMSHP UURXJ"
+    keystream = ""
+    25.times do
+      keystream << solitaire.get_keycode
+    end
+    keystream.should === solitaire_key.join
+  end
+  it "should always generate the same key for a given deck configuration " do
+  end
+end
+
 
 
 

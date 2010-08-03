@@ -25,7 +25,25 @@ module RubyQuiz1
         encrypted_message << (enc_code + 64).chr
       end
       encrypted_message
-    end      
+    end
+
+    def self.decrypt(enc_message,solitaire_key)
+      enc_message = group_message(enc_message).join
+      key = group_message(solitaire_key).join
+      raise SolitaireKeyException unless enc_message.length == key.length
+      decrypted_message = ""
+      0.upto(enc_message.length-1) do |i|
+        dec_code =
+          if enc_message[i].ord <= key[i].ord
+            enc_message[i].ord + 26 - key[i].ord
+          else
+            enc_message[i].ord - key[i].ord
+          end
+        decrypted_message << (dec_code + 64).chr
+      end
+      decrypted_message
+    end    
+    
   end
 
   class InvalidCardException < Exception
@@ -55,6 +73,14 @@ module RubyQuiz1
       if card.has_key?(:face)
         raise InvalidCardException unless deck.class.card_faces.include? card[:face]
         @face = card[:face]
+      end
+    end
+
+    def value
+      if joker?
+        return 53
+      else
+        @deck.class.card_faces.index(face) * 13 + number
       end
     end
 
@@ -91,30 +117,64 @@ module RubyQuiz1
   
     class Deck
 
-    attr_reader :cards
+      attr_reader :cards, :keyed
 
-    @@card_faces = ['C','D','H','S']
-    @@card_numbers = (1..13).to_a
-    @@joker = 'J'
-    
-    def initialize()
-      @cards = @@card_faces.product(@@card_numbers).collect { |x| Card.new(self, number: x[1], face: x[0]) }
-      @cards.push Card.new self, face: 'J'  # add two jokers
-      @cards.push Card.new self, face: 'J'
-    end
+      @@card_faces = ['C','D','H','S']
+      @@card_numbers = (1..13).to_a + ['A','B'] # ace to king and two jokers
+      @@joker = 'J'
+      @keyed = false
+      
+      def initialize(populate)
+        return true unless populate
+        @cards = @@card_faces.product(@@card_numbers).collect { |x| Card.new(self, number: x[1], face: x[0]) }
+        @cards.push Card.new self, number:'A',face: 'J'  # add two jokers
+        @cards.push Card.new self, number:'B',face: 'J'
+      end
 
-    def Deck.card_faces
-      @@card_faces
-    end
+      def Deck.card_faces
+        @@card_faces
+      end
 
-    def Deck.card_numbers
-      @@card_numbers
-    end
+      def Deck.card_numbers
+        @@card_numbers
+      end
 
-    def Deck.joker
-      @@joker
-    end
+      def Deck.joker
+        @@joker
+      end
+      
+      def key(strategy)
+        @keyed = true
+        # return the current card deck unless a strategy provided
+        return self unless strategy
+      end
+
+      def [](i)
+        @cards[i]
+      end
       
     end
+
+  # return key codes
+  # accepts a strategy shuffle the deck
+  class Solitaire
+
+    def initialize(strategy=nil)
+      # intitialize deck
+      @deck = Deck.new
+      @deck.key(strategy)
+    end
+
+    def get_keycode
+      @deck.move_down! 1,number:'A',face:'J'
+      @deck.move_down! 2,number:'B',face:'J'
+      @deck.triple_cut!
+      @deck.count_cut
+      #output_letter = @deck[@deck[0].value + 1].
+    end
+    
+  end
+  
   
 end
+
