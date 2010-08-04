@@ -53,12 +53,50 @@ describe "RubyQuiz1::Deck" do
     deck.cards[1].should eql(RubyQuiz1::Card.new deck, number: 2, face: 'C')
     deck.cards[50].should eql(RubyQuiz1::Card.new deck, number: 12, face: 'S')
     deck.cards[51].should eql(RubyQuiz1::Card.new deck, number: 13, face: 'S')
-    deck.cards[52].should eql(RubyQuiz1::Card.new deck, face: 'J')
-    deck.cards[53].should eql(RubyQuiz1::Card.new deck, face: 'J')
+    deck.cards[52].should eql(RubyQuiz1::Card.new deck, number: 'A', face: 'J')
+    deck.cards[53].should eql(RubyQuiz1::Card.new deck, number: 'B',face: 'J')
   end  
-  it "should randomize 52 cards" do
-    # test 5 cards at random, it should not be in its default positions"
-    pending
+  it "should move cards correctly(non-boundary,positive)" do
+    deck = RubyQuiz1::Deck.new
+    card = RubyQuiz1::Card.new deck, number: 12, face: 'S'
+    shifted_card = RubyQuiz1::Card.new deck, number: 13, face: 'S'
+    card_index = 50
+    deck.move! 2, card
+    deck.cards[card_index].should === shifted_card
+    deck.cards[card_index+2].should === card
+  end
+  it "should move cards correctly(boundary,positive)" do
+    deck = RubyQuiz1::Deck.new
+    card = RubyQuiz1::Card.new deck, number: 'A', face: 'J'
+    shifted_card = RubyQuiz1::Card.new deck, number: 'B', face: 'J'
+    card_index = 52
+    deck.move! 3, card
+    deck.cards[card_index].should === shifted_card
+    deck.cards[1].should === card
+  end
+  it "should triple cut correctly" do
+    deck = RubyQuiz1::Deck.new
+    deck.move_down! 1, RubyQuiz1::Card.new(nil, number: 'A', face: 'J')
+    deck[-1].should === RubyQuiz1::Card.new(deck, number: 'A', face: 'J')
+    deck.move_down! 2, RubyQuiz1::Card.new(nil, number: 'B', face: 'J')
+    deck[-1].should === RubyQuiz1::Card.new(deck, number: 1, face: 'C')
+    deck[0].should === RubyQuiz1::Card.new(deck, number: 'B', face: 'J')
+    deck.triple_cut!
+    deck[0].should === RubyQuiz1::Card.new(deck, number: 'B', face: 'J')
+    deck[1].should === RubyQuiz1::Card.new(deck, number: 2, face: 'C')
+    deck[-1].should === RubyQuiz1::Card.new(deck, number: 1, face: 'C')
+    deck[-2].should === RubyQuiz1::Card.new(deck, number: 'A', face: 'J')
+  end
+  it "should count cut correctly" do
+    deck = RubyQuiz1::Deck.new
+    deck.move_down! 1, RubyQuiz1::Card.new(nil,number: 'A', face: 'J')
+    deck.move_down! 2, RubyQuiz1::Card.new(nil,number: 'B', face: 'J')    
+    deck.triple_cut!
+    deck.count_cut!
+    deck[0].should === RubyQuiz1::Card.new(deck, number: 2, face: 'C')
+    deck[1].should === RubyQuiz1::Card.new(deck, number: 3, face: 'C')
+    deck[-1].should === RubyQuiz1::Card.new(deck, number: 1, face: 'C')
+    deck[-2].should === RubyQuiz1::Card.new(deck, number: 'B', face: 'J')
   end
 end
 
