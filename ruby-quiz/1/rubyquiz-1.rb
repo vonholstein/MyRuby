@@ -55,7 +55,7 @@ module RubyQuiz1
   class InvalidDistanceException < Exception
   end
 
-   class Card
+  class Card
      include Comparable
 
      attr_reader :number, :face
@@ -159,15 +159,14 @@ module RubyQuiz1
        # delete the card at the current index preparatory to inserting it at the new index
        @cards.delete_at current_card_index
        # insert the card in the new position
-       # if new position rolls over then move first card of deck to the end
+       # if new position rolls over then move card past first card
        # if no rollover then plain insert will do
        if current_card_index + distance > 53
-         new_card_index = (current_card_index + distance).modulo 54
-         @cards << @cards[0]
-         @cards.delete_at 0
+         new_card_index = ((current_card_index + distance).modulo 54) + 1
        else
          new_card_index = current_card_index + distance
        end
+       card.deck = self
        @cards.insert new_card_index, card
      end
 
@@ -186,13 +185,13 @@ module RubyQuiz1
        joker_b_index = @cards.index Card.new(nil, number: 'B', face: 'J')
        top_joker_index = (joker_a_index < joker_b_index)?joker_a_index:joker_b_index
        bottom_joker_index = (joker_a_index < joker_b_index)?joker_b_index:joker_a_index
-       puts "top_joker_index = #{top_joker_index}"
-       puts "bottom_joker_index = #{bottom_joker_index}"
-       p "@cards = #{@cards}"
-       p @cards[0...top_joker_index]
-       p @cards[(bottom_joker_index+1)..-1]
+       # puts "top_joker_index = #{top_joker_index}"
+       # puts "bottom_joker_index = #{bottom_joker_index}"
+       # p "@cards = #{@cards}"
+       # p @cards[0...top_joker_index]
+       # p @cards[(bottom_joker_index+1)..-1]
        @cards = @cards[(bottom_joker_index+1)..-1] + @cards[top_joker_index..bottom_joker_index] + @cards[0...top_joker_index]
-       p @cards
+       # p @cards
      end
      
      def count_cut!
@@ -223,11 +222,25 @@ module RubyQuiz1
         # skip and try once more
         get_keycode
       else
-        ((@deck[card_location].value modulo 27) + 64).chr
+        if @deck[card_location].value > 26
+          ((@deck[card_location].value - 26) + 64).chr
+        else
+          (@deck[card_location].value + 64).chr
+        end
       end
     end
     
   end
   
 end
+
+solitaire = RubyQuiz1::Solitaire.new
+message = "Code in Ruby, live longer!"
+encrypted_msg = ["CLEPK","HHNIY","CFPWH","FDFEH"].join
+keystream = ""
+20.times do
+  keystream << solitaire.get_keycode
+end
+decrypted_msg = RubyQuiz1::Crypto.decrypt(encrypted_msg,keystream)
+puts decrypted_msg
 

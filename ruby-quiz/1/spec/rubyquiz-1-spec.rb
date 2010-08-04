@@ -68,19 +68,21 @@ describe "RubyQuiz1::Deck" do
   it "should move cards correctly(boundary,positive)" do
     deck = RubyQuiz1::Deck.new
     card = RubyQuiz1::Card.new deck, number: 'A', face: 'J'
-    shifted_card = RubyQuiz1::Card.new deck, number: 'B', face: 'J'
+    shifted_card = RubyQuiz1::Card.new deck, number: 'B', face: 'J' # at location card_index + 1
     card_index = 52
+    shifted_card_index = card_index + 1
     deck.move! 3, card
-    deck.cards[card_index].should === shifted_card
-    deck.cards[1].should === card
+    deck.cards[shifted_card_index].should === shifted_card # card after moving card remains in the same position since the card is moved to the front of the deck 1C,2C......AJ,BJ => 1C,2C,AJ.......13S,BJ
+    deck.cards[2].should === card
   end
   it "should triple cut correctly" do
     deck = RubyQuiz1::Deck.new
     deck.move_down! 1, RubyQuiz1::Card.new(nil, number: 'A', face: 'J')
     deck[-1].should === RubyQuiz1::Card.new(deck, number: 'A', face: 'J')
     deck.move_down! 2, RubyQuiz1::Card.new(nil, number: 'B', face: 'J')
-    deck[-1].should === RubyQuiz1::Card.new(deck, number: 1, face: 'C')
-    deck[0].should === RubyQuiz1::Card.new(deck, number: 'B', face: 'J')
+    deck[-1].should === RubyQuiz1::Card.new(deck, number: 'A', face: 'J')
+    deck[0].should === RubyQuiz1::Card.new(deck, number: 1, face: 'C')
+    deck[1].should === RubyQuiz1::Card.new(deck, number: 'B', face: 'J')
     deck.triple_cut!
     deck[0].should === RubyQuiz1::Card.new(deck, number: 'B', face: 'J')
     deck[1].should === RubyQuiz1::Card.new(deck, number: 2, face: 'C')
@@ -113,10 +115,10 @@ describe "RubyQuiz1::Solitaire" do
     solitaire = RubyQuiz1::Solitaire.new
     solitaire_key = "DWJXH YRFDG TMSHP UURXJ"
     keystream = ""
-    25.times do
+    20.times do
       keystream << solitaire.get_keycode
     end
-    keystream.should === solitaire_key.join
+    keystream.should === solitaire_key.split.join
   end
   it "should always generate the same key for a given deck configuration " do
   end
